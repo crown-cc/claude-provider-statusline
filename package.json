@@ -1,0 +1,57 @@
+{
+  "name": "claude-provider-statusline",
+  "version": "0.1.0",
+  "description": "Model-aware Claude Code status line with transcript token usage and DeepSeek/GLM quota information.",
+  "type": "module",
+  "bin": {
+    "claude-provider-statusline": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run --pool=forks --maxWorkers=1 --minWorkers=1",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist",
+    "pack:check": "pnpm pack --dry-run",
+    "prepack": "pnpm typecheck && pnpm test && pnpm build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude-code",
+    "statusline",
+    "deepseek",
+    "glm",
+    "zhipu",
+    "tokens"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0",
+    "tsup": "^8.5.0",
+    "prettier": "^3.6.2"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "packageManager": "pnpm@10.15.0"
+}
