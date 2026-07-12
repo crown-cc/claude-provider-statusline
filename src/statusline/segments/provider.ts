@@ -20,7 +20,11 @@ export const providerSegment: StatusLineSegment = {
     if (!query) return `${provider} quota unsupported`;
 
     const cacheKey = `${provider}:${settings.baseUrl ?? "default"}`;
-    const cached = await getCached(cacheKey, config.cacheSeconds);
+    const providerCacheSeconds =
+      config.refresh.providerCacheSeconds[provider]
+      ?? config.refresh.providerCacheSeconds.default
+      ?? config.cacheSeconds;
+    const cached = await getCached(cacheKey, providerCacheSeconds);
     if (cached) return cached;
 
     const entry = await getCacheEntry(cacheKey);

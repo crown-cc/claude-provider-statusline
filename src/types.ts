@@ -9,7 +9,7 @@ export interface ClaudeStatusInput {
   transcript_path?: string;
   context_window?: {
     context_window_size?: number;
-    used_percentage?: number;
+    used_percentage?: number | null;
     current_usage?: TokenUsage;
   };
   cost?: {
@@ -89,6 +89,9 @@ export interface GlmLimit {
 
 export interface AppConfig {
   cacheSeconds: number;
+  refresh: {
+    providerCacheSeconds: Record<string, number>;
+  };
   timeoutMs: number;
   showCost: boolean;
   performance: {

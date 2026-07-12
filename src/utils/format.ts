@@ -9,7 +9,10 @@ export function compactNumber(value: number): string {
 export function formatMoney(value: string | number, currency: string): string {
   const numeric = Number(value);
   const formatted = Number.isFinite(numeric)
-    ? new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(numeric)
+    ? new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(numeric)
     : String(value);
 
   const symbol = currency === "USD" ? "$" : currency === "CNY" ? "¥" : `${currency} `;

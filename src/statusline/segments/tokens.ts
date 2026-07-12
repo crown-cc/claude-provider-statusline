@@ -7,12 +7,11 @@ export const tokensSegment: StatusLineSegment = {
   render: ({ metrics }) => {
     const usageTokens = metrics.inputTokens + metrics.outputTokens;
     const cacheBase = metrics.inputTokens + metrics.cacheReadTokens;
-    const cachePercent = cacheBase > 0 ? (metrics.cacheReadTokens / cacheBase) * 100 : 0;
+    const cachePercent =
+      cacheBase > 0 ? (metrics.cacheReadTokens / cacheBase) * 100 : 0;
 
     return [
-      `usage ${compactNumber(usageTokens)} (${compactNumber(
-        metrics.inputTokens,
-      )}↑ ${compactNumber(metrics.outputTokens)}↓)`,
+      `usage ${compactNumber(usageTokens)} (${compactNumber(metrics.inputTokens)}↑ ${compactNumber(metrics.outputTokens)}↓)`,
       `cache ${cachePercent.toFixed(1)}%`,
     ].join(" │ ");
   },
