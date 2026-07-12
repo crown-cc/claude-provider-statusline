@@ -62,6 +62,7 @@ export interface GlmLimit {
   current_value?: number;
   used?: number;
   usage?: number;
+  remaining?: number;
   limit?: number;
   total?: number;
   maxValue?: number;

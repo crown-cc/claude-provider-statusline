@@ -69,8 +69,8 @@ describe("queryGlm", () => {
     const result = await queryGlm(providerContext);
 
     expect(result.provider).toBe("glm");
-    expect(result.text).toContain("5h 0%");
-    expect(result.text).toContain("week 100%");
+    expect(result.text).toContain("5h 100%");
+    expect(result.text).toContain("week 0%");
     expect(result.text).toMatch(/reset \d{2}-\d{2} \d{2}:\d{2}/);
     expect(result.text).not.toContain("month");
     expect(result.text).not.toContain("TIME_LIMIT");
@@ -86,7 +86,7 @@ describe("queryGlm", () => {
     });
 
     const result = await queryGlm(providerContext);
-    expect(result.text).toBe("5h 0%");
+    expect(result.text).toBe("5h 100%");
   });
 
   it("shows only token windows returned by the API", async () => {
@@ -100,7 +100,7 @@ describe("queryGlm", () => {
 
     const result = await queryGlm(providerContext);
 
-    expect(result.text).toBe("week 42%");
+    expect(result.text).toBe("week 58%");
     expect(result.text).not.toContain("5h");
     expect(result.text).not.toContain("month");
     expect(result.text).not.toContain("?");
@@ -127,7 +127,7 @@ describe("queryGlm", () => {
 
     const result = await queryGlm(providerContext);
 
-    expect(result.text).toBe("5h 18%");
+    expect(result.text).toBe("5h 82%");
     expect(result.text).not.toContain("30%");
     expect(result.text).not.toContain("month");
   });
@@ -150,7 +150,7 @@ describe("queryGlm", () => {
     });
 
     const result = await queryGlm(providerContext);
-    expect(result.text).toBe("5h 12% · month 34%");
+    expect(result.text).toBe("5h 88% · month 66%");
   });
 
   it("throws the documented error when no supported token windows exist", async () => {
@@ -180,7 +180,7 @@ describe("queryGlm", () => {
     });
 
     const result = await queryGlm(providerContext);
-    expect(result.text).toBe("5h 8%");
+    expect(result.text).toBe("5h 92%");
   });
 
   it("throws the GLM API message for an unsuccessful response", async () => {

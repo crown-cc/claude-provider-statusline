@@ -75,19 +75,24 @@ function classifyTokenWindow(limit: GlmLimit): GlmWindow | undefined {
   return undefined;
 }
 
-function usedPercent(limit: GlmLimit): number | undefined {
+function remainingPercent(limit: GlmLimit): number | undefined {
   const direct = numeric(
     limit.percentage ?? limit.usedPercentage ?? limit.used_percentage,
   );
-  if (direct !== undefined) return direct;
+  if (direct !== undefined) return 100 - direct;
 
+  const remaining = numeric(limit.remaining);
   const used = numeric(
     limit.currentValue ?? limit.current_value ?? limit.used ?? limit.usage,
   );
   const total = numeric(limit.limit ?? limit.total ?? limit.maxValue ?? limit.max_value);
 
+  if (remaining !== undefined && total !== undefined && total > 0) {
+    return (remaining / total) * 100;
+  }
+
   if (used !== undefined && total !== undefined && total > 0) {
-    return (used / total) * 100;
+    return 100 - (used / total) * 100;
   }
 
   return undefined;
@@ -100,7 +105,7 @@ function parseTokenWindows(limits: GlmLimit[]): ParsedWindow[] {
     const label = classifyTokenWindow(limit);
     if (!label || windows.has(label)) continue;
 
-    const percentage = usedPercent(limit);
+    const percentage = remainingPercent(limit);
     if (percentage === undefined) continue;
 
     windows.set(label, {
