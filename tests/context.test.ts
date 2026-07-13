@@ -22,7 +22,7 @@ function createContext(input: StatusLineContext["input"] = {}): StatusLineContex
 }
 
 describe("contextSegment", () => {
-  it("calculates zero percent when used_percentage is null", () => {
+  it("shows 100 percent left when used_percentage is null and usage is zero", () => {
     const result = contextSegment.render(
       createContext({
         context_window: {
@@ -33,6 +33,19 @@ describe("contextSegment", () => {
       }),
     );
 
-    expect(result).toBe("ctx 0/1.0m 0%");
+    expect(result).toBe("Context 100% left");
+  });
+
+  it("converts used percentage to remaining percentage", () => {
+    const result = contextSegment.render(
+      createContext({
+        context_window: {
+          context_window_size: 1_000_000,
+          used_percentage: 12,
+        },
+      }),
+    );
+
+    expect(result).toBe("Context 88% left");
   });
 });
