@@ -8,6 +8,12 @@ import {
   setCached,
 } from "../../utils/cache";
 
+export function formatProviderQuotaText(provider: string, text: string): string {
+  if (provider !== "glm") return text;
+
+  return text.replace(/\b(5h|week|month)\s+(\d+(?:\.\d+)?%)(?!\s+left)/g, "$1 $2 left");
+}
+
 export const providerSegment: StatusLineSegment = {
   id: "provider",
   order: 500,
@@ -25,12 +31,14 @@ export const providerSegment: StatusLineSegment = {
       ?? config.refresh.providerCacheSeconds.default
       ?? config.cacheSeconds;
     const cached = await getCached(cacheKey, providerCacheSeconds);
-    if (cached) return cached;
+    if (cached) return formatProviderQuotaText(provider, cached);
 
     const entry = await getCacheEntry(cacheKey);
     const stale = entry?.text;
     if (entry?.retryAfter && entry.retryAfter > Date.now()) {
-      return stale ? `${stale} stale` : `${provider} quota retrying later`;
+      return stale
+        ? `${formatProviderQuotaText(provider, stale)} stale`
+        : `${provider} quota retrying later`;
     }
 
     const release = await acquireCacheLock(
@@ -38,7 +46,9 @@ export const providerSegment: StatusLineSegment = {
       config.performance.providerLockSeconds,
     );
     if (!release) {
-      return stale ? `${stale} stale` : `${provider} quota refreshing`;
+      return stale
+        ? `${formatProviderQuotaText(provider, stale)} stale`
+        : `${provider} quota refreshing`;
     }
 
     try {
@@ -49,7 +59,7 @@ export const providerSegment: StatusLineSegment = {
       });
 
       await setCached(cacheKey, result.text);
-      return result.text;
+      return formatProviderQuotaText(provider, result.text);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       await recordCacheFailure(
@@ -57,7 +67,9 @@ export const providerSegment: StatusLineSegment = {
         message,
         config.performance.failureBackoffSeconds,
       );
-      return stale ? `${stale} stale` : `${provider} quota unavailable`;
+      return stale
+        ? `${formatProviderQuotaText(provider, stale)} stale`
+        : `${provider} quota unavailable`;
     } finally {
       await release();
     }
