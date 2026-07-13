@@ -1,12 +1,12 @@
 import type { StatusLineSegment } from "../types";
-import { compactNumber, formatPercent } from "../../utils/format";
+import { formatPercent } from "../../utils/format";
 
 export const contextSegment: StatusLineSegment = {
   id: "context",
   order: 200,
   render: ({ input }) => {
     const context = input.context_window;
-    if (!context) return "ctx —";
+    if (!context) return "Context —";
 
     const current = context.current_usage;
     const used =
@@ -20,11 +20,10 @@ export const contextSegment: StatusLineSegment = {
       usedPercentage = (used / max) * 100;
     }
 
-    if (max !== undefined && max > 0 && usedPercentage != null) {
-      return `ctx ${compactNumber(used)}/${compactNumber(max)} ${formatPercent(usedPercentage)}`;
+    if (usedPercentage != null) {
+      return `Context ${formatPercent(100 - usedPercentage)} left`;
     }
 
-    if (usedPercentage != null) return `ctx ${formatPercent(usedPercentage)}`;
-    return `ctx ${compactNumber(used)}`;
+    return "Context —";
   },
 };
