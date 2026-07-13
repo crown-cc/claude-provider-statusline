@@ -25,15 +25,15 @@ function createContext(
 }
 
 describe("tokensSegment", () => {
-  it("shows usage breakdown and cache percentage", () => {
+  it("shows total input, output, and cache percentage", () => {
     const result = tokensSegment.render(
       createContext({
-        inputTokens: 73_200,
+        inputTokens: 5_700,
         outputTokens: 3_300,
-        cacheReadTokens: 1_100_000,
+        cacheReadTokens: 67_500,
       }),
     );
 
-    expect(result).toBe("usage 76.5k (73.2k↑ 3.3k↓) │ cache 93.8%");
+    expect(result).toBe("tokens 73.2k↑ 3.3k↓ │ cache 92.2%");
   });
 });
