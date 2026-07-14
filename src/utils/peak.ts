@@ -51,5 +51,5 @@ export function peakMarker(
   provider: BuiltInProviderName,
   date: Date = new Date(),
 ): string | undefined {
-  return isProviderPeakTime(provider, date) ? "⚡" : undefined;
+  return isProviderPeakTime(provider, date) ? "⚡ peak" : undefined;
 }
