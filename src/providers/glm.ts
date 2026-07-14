@@ -1,6 +1,7 @@
 import type { GlmLimit, ProviderContext, ProviderResult } from "../types";
 import { formatPercent } from "../utils/format";
 import { fetchJson } from "../utils/http";
+import { peakMarker } from "../utils/peak";
 
 interface GlmQuotaResponse {
   success?: boolean;
@@ -199,12 +200,11 @@ export async function queryGlm(context: ProviderContext): Promise<ProviderResult
     .sort((left, right) => left - right)[0];
 
   const resetText = nextResetTime ? formatResetTime(nextResetTime) : undefined;
-  const text = resetText
-    ? [...quotaParts, `reset ${resetText}`].join(" · ")
-    : quotaParts.join(" · ");
+  const parts = resetText ? [...quotaParts, `reset ${resetText}`] : quotaParts;
+  const marker = peakMarker("glm");
 
   return {
     provider: "glm",
-    text,
+    text: marker ? [...parts, marker].join(" · ") : parts.join(" · "),
   };
 }
