@@ -1,6 +1,7 @@
 import type { ProviderContext, ProviderResult } from "../types";
 import { fetchJson } from "../utils/http";
 import { formatMoney } from "../utils/format";
+import { peakMarker } from "../utils/peak";
 
 interface DeepSeekBalanceResponse {
   is_available?: boolean;
@@ -35,8 +36,11 @@ export async function queryDeepSeek(
     throw new Error("DeepSeek balance was not returned");
   }
 
+  const marker = peakMarker("deepseek");
+  const balanceText = `balance ${formatMoney(balance.total_balance, balance.currency)}`;
+
   return {
     provider: "deepseek",
-    text: `balance ${formatMoney(balance.total_balance, balance.currency)}`,
+    text: marker ? `${balanceText} · ${marker}` : balanceText,
   };
 }
