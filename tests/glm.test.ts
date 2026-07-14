@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { queryGlm } from "../src/providers/glm";
 import type { ProviderContext } from "../src/types";
@@ -20,8 +20,15 @@ function mockResponse(body: unknown, status = 200): void {
   ) as typeof fetch;
 }
 
+beforeEach(() => {
+  vi.useFakeTimers();
+  // 01:00 in Asia/Shanghai, inside the GLM off-peak window.
+  vi.setSystemTime(new Date("2026-07-14T17:00:00.000Z"));
+});
+
 afterEach(() => {
   globalThis.fetch = originalFetch;
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -74,6 +81,21 @@ describe("queryGlm", () => {
     expect(result.text).toMatch(/reset \d{2}-\d{2} \d{2}:\d{2}/);
     expect(result.text).not.toContain("month");
     expect(result.text).not.toContain("TIME_LIMIT");
+    expect(result.text).not.toContain("⚡");
+  });
+
+  it("shows a compact marker during peak hours", async () => {
+    vi.setSystemTime(new Date("2026-07-14T04:00:00.000Z"));
+    mockResponse({
+      code: 200,
+      success: true,
+      data: {
+        limits: [{ type: "TOKENS_LIMIT", unit: 3, percentage: 0 }],
+      },
+    });
+
+    const result = await queryGlm(providerContext);
+    expect(result.text).toBe("5h 100% · ⚡");
   });
 
   it("does not treat percentage zero as a missing value", async () => {
