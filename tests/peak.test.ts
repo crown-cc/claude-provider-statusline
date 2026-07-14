@@ -8,17 +8,17 @@ function chinaTime(hour: number, minute = 0): Date {
 
 describe("provider peak windows", () => {
   it("shows DeepSeek marker only outside 00:30-08:30 China time", () => {
-    expect(peakMarker("deepseek", chinaTime(0, 29))).toBe("⚡");
+    expect(peakMarker("deepseek", chinaTime(0, 29))).toBe("⚡ peak");
     expect(peakMarker("deepseek", chinaTime(0, 30))).toBeUndefined();
     expect(peakMarker("deepseek", chinaTime(8, 29))).toBeUndefined();
-    expect(peakMarker("deepseek", chinaTime(8, 30))).toBe("⚡");
+    expect(peakMarker("deepseek", chinaTime(8, 30))).toBe("⚡ peak");
   });
 
   it("shows GLM marker only outside 00:00-08:00 China time", () => {
     expect(isProviderPeakTime("glm", chinaTime(0))).toBe(false);
     expect(isProviderPeakTime("glm", chinaTime(7, 59))).toBe(false);
     expect(isProviderPeakTime("glm", chinaTime(8))).toBe(true);
-    expect(peakMarker("glm", chinaTime(12))).toBe("⚡");
+    expect(peakMarker("glm", chinaTime(12))).toBe("⚡ peak");
   });
 
   it("does not mark unknown providers as peak", () => {

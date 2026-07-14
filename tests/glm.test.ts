@@ -95,7 +95,7 @@ describe("queryGlm", () => {
     });
 
     const result = await queryGlm(providerContext);
-    expect(result.text).toBe("5h 100% · ⚡");
+    expect(result.text).toBe("5h 100% · ⚡ peak");
   });
 
   it("does not treat percentage zero as a missing value", async () => {
